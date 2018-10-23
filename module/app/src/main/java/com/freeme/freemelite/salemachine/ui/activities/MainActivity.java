@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,7 +17,6 @@ import com.freeme.freemelite.router.base.BaseAppCompatActivity;
 import com.freeme.freemelite.salemachine.R;
 import com.freeme.freemelite.salemachine.SaleMachineCofig;
 import com.freeme.freemelite.salemachine.ui.fragment.ConversationFragment;
-import com.freeme.freemelite.salemachine.ui.fragment.ScanCodeFragment;
 import com.freeme.freemelite.salemachine.ui.fragment.StandbyFragment;
 import com.freeme.freemelite.salemachine.viewmodels.MainViewModel;
 
@@ -31,8 +29,6 @@ public class MainActivity extends BaseAppCompatActivity {
     private MainViewModel mMainViewModel;
     private StandbyFragment mStandbyFragment;
     private ConversationFragment mConversationFragment;
-    private Fragment mCurrentFragment;
-    private ScanCodeFragment mScanCodeFragment;
 
 
     @Override
@@ -53,9 +49,9 @@ public class MainActivity extends BaseAppCompatActivity {
         mMainViewModel.mFragmentSortWrapper.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer fragmentSort) {
-                if (fragmentSort != null && fragmentSort == SaleMachineCofig.FragmentShow.FRAGMENT_CONVERSATION /*&& !mConversationFragment.isAdded()*/) {
+                if (fragmentSort != null && fragmentSort == SaleMachineCofig.FragmentShow.FRAGMENT_CONVERSATION) {
                     showConversationFragment();
-                }else if (fragmentSort != null && fragmentSort == SaleMachineCofig.FragmentShow.FRAGMENT_STANDBY && !mStandbyFragment.isAdded()) {
+                } else if (fragmentSort != null && fragmentSort == SaleMachineCofig.FragmentShow.FRAGMENT_STANDBY) {
                     showStandbyFragment();
                 }
             }
@@ -77,7 +73,7 @@ public class MainActivity extends BaseAppCompatActivity {
                 if (integer != null) {
                     if (integer == SaleMachineCofig.DialogState.IDLE) {
                         AsyncHandler.postDelayed(mMainViewModel.mBackToStandbyRunnable, SaleMachineCofig.CONVERSATION_IDLE_TIME);
-                    }else {
+                    } else {
                         AsyncHandler.removeRunnable(mMainViewModel.mBackToStandbyRunnable);
                     }
                 }
@@ -87,14 +83,7 @@ public class MainActivity extends BaseAppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if (mCurrentFragment == mStandbyFragment) {
-            //super.onBackPressed();
-        } else if (mCurrentFragment == mConversationFragment) {
-            showStandbyFragment();
-        } else if (mCurrentFragment == mScanCodeFragment) {
-            showConversationFragment();
-        }
+        //do nothing
     }
 
     @Override
@@ -137,22 +126,16 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void showConversationFragment() {
-        if (mConversationFragment==null){
-            mConversationFragment = new ConversationFragment();
-        }
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main_container, mConversationFragment)
-  //              .addToBackStack(MainActivity.class.getSimpleName())
+                .replace(R.id.main_container,mConversationFragment)
+                .addToBackStack(MainActivity.class.getSimpleName())
                 .commit();
-        mCurrentFragment = mConversationFragment;
     }
 
     private void initFragment() {
         mStandbyFragment = new StandbyFragment();
         mConversationFragment = new ConversationFragment();
-        mScanCodeFragment = new ScanCodeFragment();
-
     }
 
     private void showStandbyFragment() {
@@ -161,7 +144,5 @@ public class MainActivity extends BaseAppCompatActivity {
                 .replace(R.id.main_container, mStandbyFragment)
                 .addToBackStack(MainActivity.class.getSimpleName())
                 .commit();
-        mConversationFragment = null;
-        mCurrentFragment = mStandbyFragment;
     }
 }

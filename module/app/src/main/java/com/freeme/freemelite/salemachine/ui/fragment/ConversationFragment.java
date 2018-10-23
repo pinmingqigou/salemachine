@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +20,12 @@ import android.view.ViewGroup;
 import com.freeme.freemelite.router.base.BaseFragment;
 import com.freeme.freemelite.router.payload.ForgeryCardModel;
 import com.freeme.freemelite.salemachine.ActivityRouter;
-import com.freeme.freemelite.salemachine.ui.view.AnimationsContainer;
 import com.freeme.freemelite.salemachine.R;
 import com.freeme.freemelite.salemachine.SaleMachineCofig;
 import com.freeme.freemelite.salemachine.databinding.FragmentConversationBinding;
 import com.freeme.freemelite.salemachine.models.TextCardContentModel;
 import com.freeme.freemelite.salemachine.subject.PaymentSubject;
+import com.freeme.freemelite.salemachine.ui.view.AnimationsContainer;
 import com.freeme.freemelite.salemachine.ui.view.adapter.ConversationAdapter;
 import com.freeme.freemelite.salemachine.ui.view.adapter.SessionPromptAdapter;
 import com.freeme.freemelite.salemachine.viewmodels.ConversationViewModel;
@@ -65,14 +64,6 @@ public class ConversationFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.e(TAG, ">>>>>>>>>>>>>>>>>onViewCreated");
-    }
-
-    private void initWaveView() {
-        DisplayMetrics dm = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        mBinding.waveView.initialize(dm);
-        mBinding.waveView.setVisibility(View.VISIBLE);
-        mBinding.microphoneImage.setVisibility(View.GONE);
     }
 
     @Override
@@ -124,20 +115,15 @@ public class ConversationFragment extends BaseFragment {
             }
         });
 
-        mMainViewModel.mVolumeWrapper.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(@Nullable Integer integer) {
-
-            }
-        });
-
         mConversationViewModel.mSessionPromptContainerVisibility.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer visibility) {
                 if (visibility != null && visibility == View.VISIBLE) {
                     mBinding.sessionPromptContainer.setVisibility(View.VISIBLE);
+                    mBinding.conversationRecyclerView.setVisibility(View.GONE);
                 } else {
                     mBinding.sessionPromptContainer.setVisibility(View.GONE);
+                    mBinding.conversationRecyclerView.setVisibility(View.VISIBLE);
                 }
             }
         });
