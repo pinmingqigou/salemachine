@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +25,7 @@ import com.freeme.freemelite.salemachine.databinding.FragmentConversationBinding
 import com.freeme.freemelite.salemachine.models.TextCardContentModel;
 import com.freeme.freemelite.salemachine.subject.PaymentSubject;
 import com.freeme.freemelite.salemachine.ui.view.AnimationsContainer;
+import com.freeme.freemelite.salemachine.ui.view.AnimationsContainer.FramesSequenceAnimation;
 import com.freeme.freemelite.salemachine.ui.view.adapter.ConversationAdapter;
 import com.freeme.freemelite.salemachine.ui.view.adapter.SessionPromptAdapter;
 import com.freeme.freemelite.salemachine.viewmodels.ConversationViewModel;
@@ -39,8 +39,8 @@ public class ConversationFragment extends BaseFragment {
     private ConversationViewModel mConversationViewModel;
     private boolean mIsFromActivityResult = false;
     private MainViewModel mMainViewModel;
-    private AnimationsContainer.FramesSequenceAnimation mVoiceFrameAnim;
-    private AnimationsContainer.FramesSequenceAnimation mVoiceUndoFrameAnim;
+    private FramesSequenceAnimation mVoiceFrameAnim;
+    private FramesSequenceAnimation mVoiceUndoFrameAnim;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,16 +105,6 @@ public class ConversationFragment extends BaseFragment {
         mVoiceFrameAnim = AnimationsContainer.getInstance().createVoiceFrameAnim(mBinding.voiceAnimationIv);
         mVoiceUndoFrameAnim = AnimationsContainer.getInstance().createVoiceUndoFrameAnim(mBinding.microphoneDefaultIv);
 
-        mConversationViewModel.mConversationContainerVisibility.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(@Nullable Integer integer) {
-                if (integer != null && integer == View.VISIBLE) {
-                    mBinding.sessionPromptContainer.setVisibility(View.GONE);
-                    mBinding.conversationRecyclerView.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
         mConversationViewModel.mSessionPromptContainerVisibility.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer visibility) {
@@ -144,23 +134,21 @@ public class ConversationFragment extends BaseFragment {
             public void onChanged(@Nullable Integer integer) {
                 Log.e(TAG, ">>>>>>>>>>>>>>>>>>>mDialogStateWrapper.observe:" + integer);
                 if (integer == SaleMachineCofig.DialogState.LISTENING) {
-                    //wave();
                     voiceFrameStart();
                 } else {
-                    //stopWave();
                     voiceFramenStop();
                 }
             }
         });
     }
 
-    private void voiceFrameStart(){
+    private void voiceFrameStart() {
         mBinding.voiceAnimationIv.setVisibility(View.VISIBLE);
         mBinding.microphoneDefaultIv.setVisibility(View.GONE);
         mVoiceFrameAnim.start();
     }
 
-    private void voiceFramenStop(){
+    private void voiceFramenStop() {
         mVoiceFrameAnim.stop();
         mBinding.voiceAnimationIv.setVisibility(View.GONE);
         mBinding.microphoneDefaultIv.setVisibility(View.VISIBLE);
@@ -180,16 +168,6 @@ public class ConversationFragment extends BaseFragment {
         }
     }
 
-    private void wave() {
-        mBinding.voiceWaveView.setColor(Color.parseColor("#3EA1FC"));
-        mBinding.voiceWaveView.setInitialRadius(35);
-        mBinding.voiceWaveView.start();
-    }
-
-    private void stopWave() {
-         mBinding.voiceWaveView.stop();
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -206,6 +184,8 @@ public class ConversationFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.e(TAG, ">>>>>>>>>>>>>>>>>>onDestroyView");
+        mConversationViewModel.mSessionPromptContainerVisibility.setValue(View.VISIBLE);
+        mConversationAdapter.mModels.clear();
     }
 
     @Override

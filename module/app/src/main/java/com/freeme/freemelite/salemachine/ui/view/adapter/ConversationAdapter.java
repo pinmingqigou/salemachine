@@ -45,7 +45,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ViewHolder> {
     private static final String TAG = "ConversationAdapter";
     private ConversationViewModel mConversationViewModel;
     public List<BaseModel> mModels = new ArrayList<>();
-    public List<String> mHasHandlerContent = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private List<Integer> mHasHandle = new ArrayList<>();
 

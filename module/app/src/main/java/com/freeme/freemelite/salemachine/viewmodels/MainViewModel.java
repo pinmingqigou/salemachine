@@ -13,13 +13,11 @@ import android.util.Log;
 
 import com.freeme.freemelite.dueros.DuerOsManager;
 import com.freeme.freemelite.dueros.subject.DialogStateSubject;
-import com.freeme.freemelite.dueros.subject.LoginSubject;
 import com.freeme.freemelite.dueros.subject.VolumeSubject;
 import com.freeme.freemelite.dueros.subject.WakeupSubject;
 import com.freeme.freemelite.router.payload.ForgeryCardModel;
 import com.freeme.freemelite.salemachine.SaleMachineCofig;
 import com.freeme.freemelite.salemachine.impls.DialogStateCallbackImpl;
-import com.freeme.freemelite.salemachine.impls.LoginCallbackImpl;
 import com.freeme.freemelite.salemachine.impls.PaymentCallbackImpl;
 import com.freeme.freemelite.salemachine.impls.VolumeCallbackImpl;
 import com.freeme.freemelite.salemachine.impls.WakeupCallbackImpl;
@@ -81,10 +79,6 @@ public class MainViewModel extends BaseViewModel {
         }
     }
 
-    public void handleLoginSuccessEvent() {
-        //mRequestPermissionsWrapper.postValue(mRequestPermissions);
-    }
-
     public void handlePaymentSuccessful(ForgeryCardModel forgeryCardModel) {
         mDuerOsManager.speakOffLine(forgeryCardModel.content);
     }
@@ -94,8 +88,6 @@ public class MainViewModel extends BaseViewModel {
 
         private WakeupSubject mWakeupSubject;
         private WakeupCallbackImpl mWakeupCallback;
-        private LoginSubject mLoginSubject;
-        private LoginCallbackImpl mLoginCallback;
         private TextCardContentSubject mTextCardContentSubject;
         private PaymentSubject mPaymentSubject;
         private PaymentCallbackImpl mPaymentCallback;
@@ -123,10 +115,6 @@ public class MainViewModel extends BaseViewModel {
             mWakeupSubject = new WakeupSubject();
             mWakeupCallback = new WakeupCallbackImpl(MainViewModel.this);
 
-            //登陆
-            mLoginSubject = new LoginSubject();
-            mLoginCallback = new LoginCallbackImpl(MainViewModel.this);
-
             //textcard 模式返回content数据为json格式
             mTextCardContentSubject = new TextCardContentSubject();
             mRequestPermissionsWrapper.postValue(mRequestPermissions);
@@ -151,7 +139,6 @@ public class MainViewModel extends BaseViewModel {
             mDuerOsManager.onStart();
 
             mWakeupSubject.register(mWakeupCallback);
-            mLoginSubject.register(mLoginCallback);
             mDialogStateSubject.register(mDialogStateCallback);
             mVolumeSubject.register(mVolumeCallback);
         }
@@ -173,7 +160,6 @@ public class MainViewModel extends BaseViewModel {
             Log.e(TAG, ">>>>>>>>>>>>>>>>>>onStop");
             //mDuerOsManager.onStop();
             mWakeupSubject.unregister(mWakeupCallback);
-            mLoginSubject.unregister(mLoginCallback);
             mDialogStateSubject.unregister(mDialogStateCallback);
             mVolumeSubject.unregister(mVolumeCallback);
 

@@ -34,7 +34,6 @@ import com.freeme.freemelite.dueros.devicemodule.screen.message.RenderVoiceInput
 import com.freeme.freemelite.dueros.oauth.RefreshTokenUtil;
 import com.freeme.freemelite.dueros.subject.DialogStateSubject;
 import com.freeme.freemelite.dueros.subject.HtmlPayLoadSubject;
-import com.freeme.freemelite.dueros.subject.LoginSubject;
 import com.freeme.freemelite.dueros.subject.RenderCardSubject;
 import com.freeme.freemelite.dueros.subject.RenderTextInputSubject;
 import com.freeme.freemelite.dueros.subject.RenderVoiceInputSubject;
@@ -162,7 +161,6 @@ public class DuerOsManager extends BaseDuerOsManager {
             public void onSucceed(String s) {
                 Log.e(TAG, ">>>>>>>>>>>>>>>>>登陆成功");
                 mDcsSdk.run(null);
-                new LoginSubject().handleLoginSuccess();
             }
 
             @Override

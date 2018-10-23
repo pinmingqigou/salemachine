@@ -41,8 +41,6 @@ public class ConversationViewModel extends BaseViewModel {
 
     public MutableLiveData<Integer> mSessionPromptContainerVisibility = new MutableLiveData<>();
 
-    public MutableLiveData<Integer> mConversationContainerVisibility = new MutableLiveData<>();
-
     public MutableLiveData<RenderVoiceInputModel> mRenderVoiceInputModelWrapper = new MutableLiveData<>();
 
     public MutableLiveData<HtmlPayLoadModel> mHtmlPayLoadModelWrapper = new MutableLiveData<>();
@@ -76,11 +74,9 @@ public class ConversationViewModel extends BaseViewModel {
 
     public void showConversation() {
         mSessionPromptContainerVisibility.setValue(View.GONE);
-        mConversationContainerVisibility.setValue(View.VISIBLE);
     }
 
     public void showSessionPrompt() {
-        mConversationContainerVisibility.setValue(View.GONE);
         mSessionPromptContainerVisibility.setValue(View.VISIBLE);
     }
 
