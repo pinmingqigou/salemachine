@@ -1,0 +1,121 @@
+apply plugin: 'com.android.application'
+
+def androidManifest = new XmlSlurper().parse("${projectDir}/src/main/AndroidManifest.xml")
+def versionName = (androidManifest['@android:versionName']).toString()
+def versionCode = (androidManifest['@android:versionCode']).toInteger()
+
+def projectName() {
+    return buildDir.parentFile.name;
+}
+
+android {
+    compileSdkVersion cfgs.compileSdkVersion
+    defaultConfig {
+        applicationId cfgs.applicationId
+        minSdkVersion cfgs.minSdkVersion
+        targetSdkVersion cfgs.targetSdkVersion
+        multiDexEnabled true
+    }
+
+    signingConfigs {
+        releaseConfig {
+            storeFile file('keystore.jks')
+            storePassword '123456'
+            keyAlias 'baidu'
+            keyPassword '123456'
+        }
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseConfig
+        }
+
+        debug {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseConfig
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = rootProject.getName() + "_v" + versionName + "_" + versionCode + "_" + buildType.name + ".apk";
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+        dirs project(libraries['oauth']).file("libs")
+        dirs project(libraries['dueros']).file("libs")
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //project compile start
+    //implementation project(libraries['alipay'])
+    implementation project(libraries['router'])
+    implementation project(libraries['tools'])
+    implementation project(libraries['dueros'])
+    implementation project(libraries['oauth'])
+    implementation project(libraries['zxingwrapper'])
+    implementation project(libraries['wave-view'])
+    //implementation project(libraries['lib-zxing'])
+    //project compile endtools
+
+    implementation libs['multidex']
+    //noinspection GradleCompatible
+    implementation libs['appcompat-v7']
+
+    //begin of Lifecycle
+    // ViewModel and LiveData
+    implementation libs['lifecycle-extensions']
+    // alternatively - just LiveData
+    implementation libs['lifecycle-livedata']
+    // alternatively - Lifecycles only (no ViewModel or LiveData).
+    //     Support library depends on this lightweight import
+    implementation libs['lifecycle-runtime']
+    // optional - ReactiveStreams support for LiveData
+    implementation libs['lifecycle-reactivestreams']
+    //end of Lifecycle
+
+    //begin of banner
+    implementation libs['banner']
+    //end of banner
+
+    //begin of Glide
+    implementation libs['glide']
+    //end of Glide
+
+    //noinspection GradleCompatible
+    implementation libs['recyclerview-v7']
+    implementation libs['cardview-v7']
+
+    implementation libs['gson']
+
+    implementation libs['utilcode']
+
+    implementation libs['room-runtiem']
+    annotationProcessor libs['room-compiler']
+    implementation libs['room-rxjava']
+    implementation libs['room-guava']
+
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+}

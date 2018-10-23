@@ -1,0 +1,11 @@
+apply from: "config.gradle"
+
+include modules['app']
+//include libraries['alipay']
+include libraries['router']
+include libraries['tools']
+include libraries['dueros']
+include libraries['oauth']
+include libraries['lib-zxing']
+include libraries['zxingwrapper']
+include libraries['wave-view']

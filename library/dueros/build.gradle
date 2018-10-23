@@ -1,0 +1,92 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion cfgs.compileSdkVersion
+    buildToolsVersion cfgs.buildToolsVersion
+
+    defaultConfig {
+        versionCode cfgs.versionCode
+        versionName cfgs.versionName
+        minSdkVersion cfgs.minSdkVersion
+        targetSdkVersion cfgs.targetSdkVersion
+        multiDexEnabled true
+        ndk {
+            // 平台
+            abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/ASL2.0'
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+        dirs project(libraries['oauth']).file('libs')
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: project(libraries['oauth']).file('libs'), include: ['*.jar'])
+    implementation project(libraries['tools'])
+    implementation project(libraries['router'])
+    // passport
+    implementation project(libraries['oauth'])
+    // 定位
+    //implementation project(':location')
+
+    implementation libs['annotations']
+    implementation libs['constraint-layout']
+    implementation libs['appcompat-v7']
+    //implementation libs['design']
+    implementation libs['multidex']
+    implementation libs['jackson-core']
+    implementation libs['jackson-databind']
+    implementation libs['jackson-annotations']
+    implementation libs['gson']
+
+    implementation files('libs/commons-fileupload-1.3.2.jar')
+    implementation files('libs/commons-lang3-3.4.jar')
+    implementation files('libs/commons-io-2.5.jar')
+    implementation files('libs/okhttp-3.8.1.jar')
+    implementation files('libs/okio-1.14.0.jar')
+    implementation files('libs/jlayer-1.0.1.jar')
+    implementation files('libs/turbonet.jar')
+    implementation files('libs/localtts-2.3.1.jar')
+    implementation files('libs/dcssdk-1.6.2.5-acl-debug.jar')
+    // 可选-------
+    implementation name: 'dlp-1.1.1', ext: 'aar'
+    // 百度url音频播放器
+    implementation name: 'bdplayer-1.0.0', ext: 'aar'
+    // 可选-------
+
+
+}

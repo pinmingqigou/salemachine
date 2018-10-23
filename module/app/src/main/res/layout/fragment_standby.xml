@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="standbyviewmodel"
+            type="com.freeme.freemelite.salemachine.viewmodels.StandbyViewModel" />
+
+        <import type="com.freeme.freemelite.salemachine.ActivityRouter"/>
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/standby_bg">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="41dp"
+                android:gravity="center"
+                android:text="您可以说“小度小度”唤醒我"
+                android:textColor="#fff"
+                android:textSize="24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="感受全新的购物体验"
+                android:textColor="#fff"
+                android:textSize="14dp" />
+        </LinearLayout>
+
+
+        <com.youth.banner.Banner
+            android:id="@+id/banner"
+            android:layout_width="460dp"
+            android:layout_height="220dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="128dp" />
+
+        <LinearLayout
+            android:layout_marginTop="37dp"
+            android:layout_marginLeft="31dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="19:20"
+                android:textColor="#fff"
+                android:textSize="42sp" />
+
+            <TextView
+                android:maxLines="1"
+                android:id="@+id/date_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:text="9月4日 星期五"
+                android:textColor="#fff"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/standby_home_button"
+            android:layout_marginTop="49dp"
+            android:layout_marginRight="41dp"
+            android:layout_gravity="right"
+            android:src="@mipmap/home_button_2"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+    </FrameLayout>
+
+</layout>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="conversationviewmodel"
+            type="com.freeme.freemelite.salemachine.viewmodels.ConversationViewModel"/>
+    </data>
+
+    <RelativeLayout
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_marginLeft="20dp"
+            android:layout_width="550dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="#202020"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:paddingLeft="22dp"
+                android:paddingRight="22dp"
+                android:background="@drawable/shape_conversation_text_card_bg"
+                android:id="@+id/render_card_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="24sp" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+
+</layout>

@@ -1,0 +1,41 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.freeme.freemelite.dueros" >
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <application>
+        <!-- 百度语音离线配置开始，如果不用离线配置不用配置 -->
+        <!--https://console.bce.baidu.com/ai/?_=1535963773474#/ai/speech/app/list-->
+        <meta-data
+            android:name="com.baidu.speech.APP_ID"
+            android:value="11739997"/>
+        <meta-data
+            android:name="com.baidu.speech.API_KEY"
+            android:value="IllUEAvEH8NbKEODlATHnDrm" />
+        <meta-data
+            android:name="com.baidu.speech.SECRET_KEY"
+            android:value="lZCNHL67ehK86bC27YCEcc40VWWwXUHv" />
+        <!--百度语音离线配置结束-->
+
+
+        <!-- KITT 唤醒 单独进程 -->
+        <service
+            android:name="com.baidu.duer.kitt.KittWakeUpService"
+            android:enabled="true"
+            android:process=":kittwakeup" />
+    </application>
+</manifest>

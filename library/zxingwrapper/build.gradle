@@ -1,0 +1,29 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion cfgs.compileSdkVersion
+    buildToolsVersion cfgs.buildToolsVersion
+
+    defaultConfig {
+        versionCode cfgs.versionCode
+        versionName cfgs.versionName
+        minSdkVersion cfgs.minSdkVersion
+        targetSdkVersion cfgs.targetSdkVersion
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(libraries['lib-zxing'])
+    //implementation 'cn.yipianfengye.android:zxing-library:2.2'
+    implementation libs['appcompat-v7']
+    implementation libs['design']
+    implementation 'pub.devrel:easypermissions:0.2.0'
+}
