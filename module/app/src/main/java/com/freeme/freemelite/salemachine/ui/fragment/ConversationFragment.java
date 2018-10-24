@@ -22,7 +22,7 @@ import com.freeme.freemelite.salemachine.ActivityRouter;
 import com.freeme.freemelite.salemachine.R;
 import com.freeme.freemelite.salemachine.SaleMachineCofig;
 import com.freeme.freemelite.salemachine.databinding.FragmentConversationBinding;
-import com.freeme.freemelite.salemachine.models.TextCardContentModel;
+import com.freeme.freemelite.router.payload.TextCardContentModel;
 import com.freeme.freemelite.salemachine.subject.PaymentSubject;
 import com.freeme.freemelite.salemachine.ui.view.AnimationsContainer;
 import com.freeme.freemelite.salemachine.ui.view.AnimationsContainer.FramesSequenceAnimation;
@@ -234,7 +234,7 @@ public class ConversationFragment extends BaseFragment {
                         mConversationViewModel.mPayMoneyWrapper.setValue("");
                     }
 
-                    mConversationViewModel.mForgeryCardWrapper.setValue(forgeryCardModel);
+                    mConversationViewModel.mModelWrapper.setValue(forgeryCardModel);
                     new PaymentSubject().handlePaymentSuccessful(forgeryCardModel);
                 } else if (bundle.getInt(ActivityRouter.RESULT_TYPE) == ActivityRouter.RESULT_FAILED) {
                     Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>解析二维码失败");

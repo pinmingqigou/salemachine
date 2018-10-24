@@ -37,10 +37,8 @@ import com.freeme.freemelite.dueros.subject.HtmlPayLoadSubject;
 import com.freeme.freemelite.dueros.subject.RenderCardSubject;
 import com.freeme.freemelite.dueros.subject.RenderTextInputSubject;
 import com.freeme.freemelite.dueros.subject.RenderVoiceInputSubject;
-import com.freeme.freemelite.dueros.subject.RenderWeatherSubject;
 import com.freeme.freemelite.dueros.subject.VolumeSubject;
 import com.freeme.freemelite.router.payload.RenderCardModel;
-import com.freeme.freemelite.router.payload.RenderWeatherModel;
 
 import java.util.HashMap;
 
@@ -253,11 +251,6 @@ public class DuerOsManager extends BaseDuerOsManager {
         @Override
         public void onRenderDirective(Directive directive) {
             Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>IRenderExtendListener.onRenderDirective&directive:" + directive.toString());
-            if (directive.getName().equals(DuerOsConfig.RenderSort.RENDER_WEATHER)) {
-                RenderWeatherModel renderWeatherModel = PayloadParser.parseWeather(directive);
-                new RenderWeatherSubject().handleRenderWeather(renderWeatherModel);
-                Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>onRenderDirective -> RenderWeather:" + renderWeatherModel.toString());
-            }
         }
 
     };

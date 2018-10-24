@@ -14,10 +14,11 @@ import com.freeme.freemelite.dueros.subject.HtmlPayLoadSubject;
 import com.freeme.freemelite.dueros.subject.RenderCardSubject;
 import com.freeme.freemelite.dueros.subject.RenderTextInputSubject;
 import com.freeme.freemelite.dueros.subject.RenderVoiceInputSubject;
-import com.freeme.freemelite.dueros.subject.RenderWeatherSubject;
-import com.freeme.freemelite.router.payload.ForgeryCardModel;
+import com.freeme.freemelite.router.payload.BaseModel;
+import com.freeme.freemelite.router.payload.HtmlPayLoadModel;
 import com.freeme.freemelite.router.payload.RenderCardModel;
-import com.freeme.freemelite.router.payload.RenderWeatherModel;
+import com.freeme.freemelite.router.payload.RenderVoiceInputModel;
+import com.freeme.freemelite.router.payload.TextCardContentModel;
 import com.freeme.freemelite.salemachine.SaleMachineCofig;
 import com.freeme.freemelite.salemachine.impls.DialogStateCallbackImpl;
 import com.freeme.freemelite.salemachine.impls.HtmlPayLoadCallbackImpl;
@@ -25,11 +26,7 @@ import com.freeme.freemelite.salemachine.impls.PayMoneyCallackImpl;
 import com.freeme.freemelite.salemachine.impls.RenderCardCallbackImpl;
 import com.freeme.freemelite.salemachine.impls.RenderTextInputCallbackImpl;
 import com.freeme.freemelite.salemachine.impls.RenderVoiceInputCallbackImpl;
-import com.freeme.freemelite.salemachine.impls.RenderWeatherCallbackCallbackImpl;
 import com.freeme.freemelite.salemachine.impls.TextCardContentCallbackImpl;
-import com.freeme.freemelite.salemachine.models.HtmlPayLoadModel;
-import com.freeme.freemelite.salemachine.models.RenderVoiceInputModel;
-import com.freeme.freemelite.salemachine.models.TextCardContentModel;
 import com.freeme.freemelite.salemachine.subject.PayMoneySubject;
 import com.freeme.freemelite.salemachine.subject.TextCardContentSubject;
 
@@ -41,15 +38,7 @@ public class ConversationViewModel extends BaseViewModel {
 
     public MutableLiveData<Integer> mSessionPromptContainerVisibility = new MutableLiveData<>();
 
-    public MutableLiveData<RenderVoiceInputModel> mRenderVoiceInputModelWrapper = new MutableLiveData<>();
-
-    public MutableLiveData<HtmlPayLoadModel> mHtmlPayLoadModelWrapper = new MutableLiveData<>();
-
-    public MutableLiveData<RenderCardModel> mRenderCardModelWrapper = new MutableLiveData<>();
-
-    public MutableLiveData<RenderWeatherModel> mRenderWeatherModelWrapper = new MutableLiveData<>();
-
-    public MutableLiveData<ForgeryCardModel> mForgeryCardWrapper = new MutableLiveData<>();
+    public MutableLiveData<BaseModel> mModelWrapper = new MutableLiveData<>();
 
     public MutableLiveData<TextCardContentModel> mTextCardContentModelWrapper = new MutableLiveData<>();
 
@@ -96,7 +85,7 @@ public class ConversationViewModel extends BaseViewModel {
         RenderVoiceInputModel renderVoiceInputModel = new RenderVoiceInputModel();
         renderVoiceInputModel.inputText = input;
         renderVoiceInputModel.type = type;
-        mRenderVoiceInputModelWrapper.setValue(renderVoiceInputModel);
+        mModelWrapper.setValue(renderVoiceInputModel);
     }
 
     @Override
@@ -120,17 +109,12 @@ public class ConversationViewModel extends BaseViewModel {
         HtmlPayLoadModel htmlPayLoadModel = new HtmlPayLoadModel();
         htmlPayLoadModel.token = token;
         htmlPayLoadModel.url = url;
-        mHtmlPayLoadModelWrapper.setValue(htmlPayLoadModel);
+        mModelWrapper.setValue(htmlPayLoadModel);
     }
 
     public void handleRenderCardPayLoad(RenderCardModel renderCardModel) {
-        mRenderCardModelWrapper.setValue(renderCardModel);
+        mModelWrapper.setValue(renderCardModel);
     }
-
-    public void handleRenderWeatherPayLoad(RenderWeatherModel renderWeatherModel) {
-        mRenderWeatherModelWrapper.setValue(renderWeatherModel);
-    }
-
 
     class ConversationLifecycle implements LifecycleObserver {
         private RenderVoiceInputSubject mRenderVoiceInputSubject;
@@ -139,8 +123,6 @@ public class ConversationViewModel extends BaseViewModel {
         private HtmlPayLoadCallbackImpl mHtmlPayLoad;
         private RenderCardSubject mRenderCardSubject;
         private RenderCardCallbackImpl mRenderCardCallback;
-        private RenderWeatherSubject mRenderWeatherSubject;
-        private RenderWeatherCallbackCallbackImpl mRenderWeatherCallbackCallback;
         private RenderTextInputSubject mRenderTextInputSubject;
         private RenderTextInputCallbackImpl mRenderTextInputCallback;
         private final TextCardContentCallbackImpl mTextCardContentCallback;
@@ -171,10 +153,6 @@ public class ConversationViewModel extends BaseViewModel {
             mRenderCardSubject = new RenderCardSubject();
             mRenderCardCallback = new RenderCardCallbackImpl(ConversationViewModel.this);
 
-            //extend weather
-            mRenderWeatherSubject = new RenderWeatherSubject();
-            mRenderWeatherCallbackCallback = new RenderWeatherCallbackCallbackImpl(ConversationViewModel.this);
-
             //content json
             mTextCardContentCallback = new TextCardContentCallbackImpl(ConversationViewModel.this);
             mTextCardContentSubject = new TextCardContentSubject();
@@ -200,7 +178,6 @@ public class ConversationViewModel extends BaseViewModel {
             mRenderTextInputSubject.register(mRenderTextInputCallback);
             mHtmlPayLoadSubject.register(mHtmlPayLoad);
             mRenderCardSubject.register(mRenderCardCallback);
-            mRenderWeatherSubject.register(mRenderWeatherCallbackCallback);
             mTextCardContentSubject.register(mTextCardContentCallback);
             mDialogStateSubject.register(mDialogStateCallback);
             mPayMoneySubject.register(mPayMoneyCallack);
@@ -222,7 +199,6 @@ public class ConversationViewModel extends BaseViewModel {
             mRenderTextInputSubject.unregister(mRenderTextInputCallback);
             mHtmlPayLoadSubject.unregister(mHtmlPayLoad);
             mRenderCardSubject.unregister(mRenderCardCallback);
-            mRenderWeatherSubject.unregister(mRenderWeatherCallbackCallback);
             mTextCardContentSubject.unregister(mTextCardContentCallback);
             mDialogStateSubject.unregister(mDialogStateCallback);
             mPayMoneySubject.unregister(mPayMoneyCallack);

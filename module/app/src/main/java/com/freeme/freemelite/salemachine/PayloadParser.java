@@ -1,6 +1,6 @@
 package com.freeme.freemelite.salemachine;
 
-import com.freeme.freemelite.salemachine.models.TextCardContentModel;
+import com.freeme.freemelite.router.payload.TextCardContentModel;
 import com.google.gson.Gson;
 
 public class PayloadParser {

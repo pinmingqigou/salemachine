@@ -3,13 +3,12 @@ package com.freeme.freemelite.salemachine.ui.view.adapter;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,22 +18,21 @@ import com.freeme.freemelite.dueros.DcsWebView;
 import com.freeme.freemelite.router.RouterConfig.CoversationType;
 import com.freeme.freemelite.router.payload.BaseModel;
 import com.freeme.freemelite.router.payload.ForgeryCardModel;
+import com.freeme.freemelite.router.payload.HtmlPayLoadModel;
 import com.freeme.freemelite.router.payload.RenderCardModel;
-import com.freeme.freemelite.router.payload.RenderWeatherModel;
+import com.freeme.freemelite.router.payload.RenderVoiceInputModel;
+import com.freeme.freemelite.router.payload.TextCardContentModel;
 import com.freeme.freemelite.salemachine.PayloadParser;
-import com.freeme.freemelite.salemachine.R;
 import com.freeme.freemelite.salemachine.SaleMachineCofig;
 import com.freeme.freemelite.salemachine.databinding.ItemConversationHtmlpayloadBinding;
 import com.freeme.freemelite.salemachine.databinding.ItemConversationListCardBinding;
 import com.freeme.freemelite.salemachine.databinding.ItemConversationStandardCardBinding;
 import com.freeme.freemelite.salemachine.databinding.ItemConversationTextCardBinding;
 import com.freeme.freemelite.salemachine.databinding.ItemConversationUserBinding;
-import com.freeme.freemelite.salemachine.models.HtmlPayLoadModel;
-import com.freeme.freemelite.salemachine.models.RenderVoiceInputModel;
-import com.freeme.freemelite.salemachine.models.TextCardContentModel;
 import com.freeme.freemelite.salemachine.subject.PayMoneySubject;
 import com.freeme.freemelite.salemachine.subject.TextCardContentSubject;
 import com.freeme.freemelite.salemachine.ui.view.adapter.ConversationAdapter.ViewHolder;
+import com.freeme.freemelite.salemachine.ui.view.factory.DataBindingFactory;
 import com.freeme.freemelite.salemachine.viewmodels.ConversationViewModel;
 import com.freeme.freemelite.tools.JsonUtil;
 
@@ -43,10 +41,10 @@ import java.util.List;
 
 public class ConversationAdapter extends RecyclerView.Adapter<ViewHolder> {
     private static final String TAG = "ConversationAdapter";
-    private ConversationViewModel mConversationViewModel;
     public List<BaseModel> mModels = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private List<Integer> mHasHandle = new ArrayList<>();
+    private int mVoiceInputLoopVariable = 0;
 
     public void setRecyclerView(RecyclerView recyclerView) {
         mRecyclerView = recyclerView;
@@ -54,54 +52,24 @@ public class ConversationAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     public ConversationAdapter(final RecyclerView recyclerView, LifecycleOwner lifecycleOwner, ConversationViewModel conversationViewModel) {
         mRecyclerView = recyclerView;
-        this.mConversationViewModel = conversationViewModel;
-        conversationViewModel.mRenderVoiceInputModelWrapper.observe(lifecycleOwner, new Observer<RenderVoiceInputModel>() {
+        conversationViewModel.mModelWrapper.observe(lifecycleOwner, new Observer<BaseModel>() {
             @Override
-            public void onChanged(@Nullable RenderVoiceInputModel renderVoiceInputModel) {
-                if (renderVoiceInputModel == null) {
-                    return;
+            public void onChanged(@Nullable BaseModel baseModel) {
+                if (baseModel != null) {
+                    if (mVoiceInputLoopVariable == 0) {
+                        mModels.add(baseModel);
+                    } else {
+                        mModels.set(mModels.size() - 1, baseModel);
+                    }
+                    if (baseModel instanceof RenderVoiceInputModel) {
+                        mVoiceInputLoopVariable += 1;
+                        if (((RenderVoiceInputModel) baseModel).type == SaleMachineCofig.RenderVoiceInputTextPayloadType.FINAL) {
+                            mVoiceInputLoopVariable = 0;
+                        }
+                    }
+                    notifyDataSetChanged();
+                    mRecyclerView.smoothScrollToPosition(getItemCount());
                 }
-                if (renderVoiceInputModel.type != SaleMachineCofig.RenderVoiceInputTextPayloadType.INTERMEDIATE && !TextUtils.isEmpty(renderVoiceInputModel.inputText)) {
-                    mModels.add(renderVoiceInputModel);
-                }
-                notifyDataSetChanged();
-                mRecyclerView.smoothScrollToPosition(getItemCount());
-            }
-        });
-
-        conversationViewModel.mHtmlPayLoadModelWrapper.observe(lifecycleOwner, new Observer<HtmlPayLoadModel>() {
-            @Override
-            public void onChanged(@Nullable HtmlPayLoadModel htmlPayLoadModel) {
-                mModels.add(htmlPayLoadModel);
-                notifyDataSetChanged();
-                mRecyclerView.smoothScrollToPosition(getItemCount());
-            }
-        });
-
-        conversationViewModel.mRenderCardModelWrapper.observe(lifecycleOwner, new Observer<RenderCardModel>() {
-            @Override
-            public void onChanged(@Nullable RenderCardModel renderCardModel) {
-                mModels.add(renderCardModel);
-                notifyDataSetChanged();
-                mRecyclerView.smoothScrollToPosition(getItemCount());
-            }
-        });
-
-        conversationViewModel.mRenderWeatherModelWrapper.observe(lifecycleOwner, new Observer<RenderWeatherModel>() {
-            @Override
-            public void onChanged(@Nullable RenderWeatherModel renderWeatherModel) {
-                mModels.add(renderWeatherModel);
-                notifyDataSetChanged();
-                mRecyclerView.smoothScrollToPosition(getItemCount());
-            }
-        });
-
-        conversationViewModel.mForgeryCardWrapper.observe(lifecycleOwner, new Observer<ForgeryCardModel>() {
-            @Override
-            public void onChanged(@Nullable ForgeryCardModel forgeryCardModel) {
-                mModels.add(forgeryCardModel);
-                notifyDataSetChanged();
-                mRecyclerView.smoothScrollToPosition(getItemCount());
             }
         });
     }
@@ -114,39 +82,13 @@ public class ConversationAdapter extends RecyclerView.Adapter<ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
-        if (viewType == CoversationType.VOICE_INPUT) {
-            ItemConversationUserBinding userBinding = DataBindingUtil.inflate(inflater, R.layout.item_conversation_user, parent, false);
-            ViewHolder viewHolder = new ViewHolder(userBinding.getRoot());
-            return viewHolder;
-        } else if (viewType == CoversationType.HTML) {
-            ItemConversationHtmlpayloadBinding htmlpayloadBinding = DataBindingUtil.inflate(inflater, R.layout.item_conversation_htmlpayload, parent, false);
-            ViewHolder viewHolder = new ViewHolder(htmlpayloadBinding.getRoot());
-            return viewHolder;
-        } else if (viewType == CoversationType.TEXT_CARD || viewType == CoversationType.FORGERY_CARD) {
-            ItemConversationTextCardBinding textCardBinding = DataBindingUtil.inflate(inflater, R.layout.item_conversation_text_card, parent, false);
-            ViewHolder viewHolder = new ViewHolder(textCardBinding.getRoot());
-            return viewHolder;
-        } else if (viewType == CoversationType.LIST_CARD) {
-            Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>viewType == CoversationType.LIST_CARD");
-            ItemConversationListCardBinding listCardBinding = DataBindingUtil.inflate(inflater, R.layout.item_conversation_list_card, parent, false);
-            ViewHolder viewHolder = new ViewHolder(listCardBinding.getRoot());
-            return viewHolder;
-        } else if (viewType == CoversationType.STANDARD_CARD) {
-            Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>viewType == CoversationType.STANDARD_CARD");
-            ItemConversationStandardCardBinding standardCardBinding = DataBindingUtil.inflate(inflater, R.layout.item_conversation_standard_card, parent, false);
-            ViewHolder viewHolder = new ViewHolder(standardCardBinding.getRoot());
-            return viewHolder;
-        } else if (viewType == CoversationType.IMAGE_LIST_CARD) {
-            Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>viewType == CoversationType.IMAGE_LIST_CARD");
-        } else if (viewType == CoversationType.EXTEND_WEATHER) {
-            ItemConversationTextCardBinding textCardBinding = DataBindingUtil.inflate(inflater, R.layout.item_conversation_text_card, parent, false);
-            ViewHolder viewHolder = new ViewHolder(textCardBinding.getRoot());
-            return viewHolder;
+        DataBindingFactory dataBindingFactory = new DataBindingFactory();
+        ViewDataBinding viewDataBinding = dataBindingFactory.getViewDataBinding(parent, viewType);
+        ViewHolder viewHolder = new ViewHolder(new TextView(parent.getContext()));
+        if (viewDataBinding != null) {
+            viewHolder = new ViewHolder(viewDataBinding.getRoot());
         }
-        return new ViewHolder(new TextView(parent.getContext()));
-
+        return viewHolder;
     }
 
     @Override
@@ -184,12 +126,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ViewHolder> {
                     new TextCardContentSubject().handleTextCardContent(textCardContentModel);
                 }
             }
-
-        } else if (itemViewType == CoversationType.EXTEND_WEATHER) {
-            ItemConversationTextCardBinding textCardBinding = DataBindingUtil.getBinding(holder.itemView);
-            RenderWeatherModel renderWeatherModel = (RenderWeatherModel) mModels.get(position);
-            Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>onBindViewHolder -> ExtendWeather:" + renderWeatherModel.toString());
-            textCardBinding.renderCardTv.setText(renderWeatherModel.toString());
         } else if (itemViewType == CoversationType.LIST_CARD) {
             Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>>>>onBindViewHolder -> ListCard");
             try {
@@ -204,7 +140,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ViewHolder> {
             } catch (Exception e) {
                 Log.e(TAG, ">>>>>>>>>>>>>>>>>>>>handle list card error:" + e);
             }
-
         } else if (itemViewType == CoversationType.FORGERY_CARD) {
             ItemConversationTextCardBinding textCardBinding = DataBindingUtil.getBinding(holder.itemView);
             ForgeryCardModel forgeryCardModel = (ForgeryCardModel) mModels.get(position);

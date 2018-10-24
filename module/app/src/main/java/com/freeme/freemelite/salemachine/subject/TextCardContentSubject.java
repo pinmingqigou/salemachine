@@ -1,7 +1,7 @@
 package com.freeme.freemelite.salemachine.subject;
 
 import com.freeme.freemelite.salemachine.callback.TextCardContentCallback;
-import com.freeme.freemelite.salemachine.models.TextCardContentModel;
+import com.freeme.freemelite.router.payload.TextCardContentModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.freeme.freemelite.salemachine.models;
+package com.freeme.freemelite.router.payload;
 
 public class TextCardContentModel {
 

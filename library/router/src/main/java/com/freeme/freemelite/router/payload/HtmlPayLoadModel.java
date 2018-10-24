@@ -1,7 +1,6 @@
-package com.freeme.freemelite.salemachine.models;
+package com.freeme.freemelite.router.payload;
 
 import com.freeme.freemelite.router.RouterConfig;
-import com.freeme.freemelite.router.payload.BaseModel;
 
 public class HtmlPayLoadModel implements BaseModel {
     public String url;
