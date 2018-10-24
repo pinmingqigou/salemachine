@@ -18,11 +18,11 @@ import android.view.ViewGroup;
 
 import com.freeme.freemelite.router.base.BaseFragment;
 import com.freeme.freemelite.router.payload.ForgeryCardModel;
+import com.freeme.freemelite.router.payload.TextCardContentModel;
 import com.freeme.freemelite.salemachine.ActivityRouter;
 import com.freeme.freemelite.salemachine.R;
 import com.freeme.freemelite.salemachine.SaleMachineCofig;
 import com.freeme.freemelite.salemachine.databinding.FragmentConversationBinding;
-import com.freeme.freemelite.router.payload.TextCardContentModel;
 import com.freeme.freemelite.salemachine.subject.PaymentSubject;
 import com.freeme.freemelite.salemachine.ui.view.AnimationsContainer;
 import com.freeme.freemelite.salemachine.ui.view.AnimationsContainer.FramesSequenceAnimation;
@@ -37,7 +37,6 @@ public class ConversationFragment extends BaseFragment {
     private FragmentConversationBinding mBinding;
     private ConversationAdapter mConversationAdapter;
     private ConversationViewModel mConversationViewModel;
-    private boolean mIsFromActivityResult = false;
     private MainViewModel mMainViewModel;
     private FramesSequenceAnimation mVoiceFrameAnim;
     private FramesSequenceAnimation mVoiceUndoFrameAnim;
@@ -64,6 +63,10 @@ public class ConversationFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.e(TAG, ">>>>>>>>>>>>>>>>>onViewCreated");
+        setupSessionPromptRecyclerView();
+
+        mVoiceFrameAnim = AnimationsContainer.getInstance().createVoiceFrameAnim(mBinding.voiceAnimationIv);
+        mVoiceUndoFrameAnim = AnimationsContainer.getInstance().createVoiceUndoFrameAnim(mBinding.microphoneDefaultIv);
     }
 
     @Override
@@ -87,23 +90,9 @@ public class ConversationFragment extends BaseFragment {
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        Log.e(TAG, ">>>>>>>>>>>>>>>>>setUserVisibleHint：" + isVisibleToUser);
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        Log.e(TAG, ">>>>>>>>>>>>>>>>>onHiddenChanged：" + hidden);
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         Log.e(TAG, ">>>>>>>>>>>>>>>>>>>onStart");
-        mVoiceFrameAnim = AnimationsContainer.getInstance().createVoiceFrameAnim(mBinding.voiceAnimationIv);
-        mVoiceUndoFrameAnim = AnimationsContainer.getInstance().createVoiceUndoFrameAnim(mBinding.microphoneDefaultIv);
 
         mConversationViewModel.mSessionPromptContainerVisibility.observe(this, new Observer<Integer>() {
             @Override
@@ -111,6 +100,7 @@ public class ConversationFragment extends BaseFragment {
                 if (visibility != null && visibility == View.VISIBLE) {
                     mBinding.sessionPromptContainer.setVisibility(View.VISIBLE);
                     mBinding.conversationRecyclerView.setVisibility(View.GONE);
+                    setupConversationRecycleView();
                 } else {
                     mBinding.sessionPromptContainer.setVisibility(View.GONE);
                     mBinding.conversationRecyclerView.setVisibility(View.VISIBLE);
@@ -146,26 +136,20 @@ public class ConversationFragment extends BaseFragment {
         mBinding.voiceAnimationIv.setVisibility(View.VISIBLE);
         mBinding.microphoneDefaultIv.setVisibility(View.GONE);
         mVoiceFrameAnim.start();
+        mVoiceUndoFrameAnim.stop();
     }
 
     private void voiceFramenStop() {
         mVoiceFrameAnim.stop();
         mBinding.voiceAnimationIv.setVisibility(View.GONE);
         mBinding.microphoneDefaultIv.setVisibility(View.VISIBLE);
+        mVoiceUndoFrameAnim.start();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.e(TAG, ">>>>>>>>>>>>>>>>>onResume");
-        mVoiceUndoFrameAnim.start();
-        if (!mIsFromActivityResult) {
-            setupSessionPromptRecyclerView();
-            setupConversationRecycleView();
-            setupVoiceLineView();
-        } else {
-            mIsFromActivityResult = false;
-        }
     }
 
     @Override
@@ -185,7 +169,9 @@ public class ConversationFragment extends BaseFragment {
         super.onDestroyView();
         Log.e(TAG, ">>>>>>>>>>>>>>>>>>onDestroyView");
         mConversationViewModel.mSessionPromptContainerVisibility.setValue(View.VISIBLE);
-        mConversationAdapter.mModels.clear();
+        if (mConversationAdapter != null) {
+            mConversationAdapter.mModels.clear();
+        }
     }
 
     @Override
@@ -210,7 +196,6 @@ public class ConversationFragment extends BaseFragment {
          */
         if (requestCode == ActivityRouter.REQUEST_CODE) {
             //处理扫描结果（在界面上显示）
-            mIsFromActivityResult = true;
             if (null != data) {
                 Bundle bundle = data.getExtras();
                 if (bundle == null) {
@@ -241,10 +226,6 @@ public class ConversationFragment extends BaseFragment {
                 }
             }
         }
-    }
-
-    private void setupVoiceLineView() {
-
     }
 
     private void setupConversationRecycleView() {

@@ -77,7 +77,6 @@ public class ConversationViewModel extends BaseViewModel {
                 showConversation();
             }
         }
-
         setInputModelWrapper(input, type);
     }
 
