@@ -128,7 +128,7 @@ public class MainActivity extends BaseAppCompatActivity {
     private void showConversationFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main_container,mConversationFragment)
+                .replace(R.id.main_container, mConversationFragment)
                 .addToBackStack(MainActivity.class.getSimpleName())
                 .commit();
     }

@@ -11,7 +11,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.View;
 
+import com.freeme.freemelite.salemachine.ActivityRouter;
 import com.freeme.freemelite.salemachine.R;
 
 import java.text.SimpleDateFormat;
@@ -23,6 +25,7 @@ public class StandbyViewModel extends BaseViewModel {
     private static final String TAG = "StandbyViewModel";
     public MutableLiveData<String> mDateWrapper = new MutableLiveData<>();
     public MutableLiveData<String> mTimeWrapper = new MutableLiveData<>();
+    public Context mContext;
 
     public List<Integer> getBannerImageUrls() {
         ArrayList<Integer> imageUrls = new ArrayList<>();
@@ -37,7 +40,18 @@ public class StandbyViewModel extends BaseViewModel {
 
     @Override
     public LifecycleObserver bindLifecycle(Context context, LifecycleOwner lifecycleOwner) {
+        mContext = context.getApplicationContext();
         return new StandbyLifecycle(context, lifecycleOwner);
+    }
+
+    //see data binding of method references
+    public void onHomeButtonClick(View view){
+        ActivityRouter.startFeatureActivity(mContext);
+    }
+
+    //see data bingding of listener bindings
+    public void onHomeButtonClick(Context context){
+        ActivityRouter.startFeatureActivity(mContext);
     }
 
 

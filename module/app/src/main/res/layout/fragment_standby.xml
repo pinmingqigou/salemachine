@@ -4,7 +4,7 @@
     <data>
 
         <variable
-            name="standbyviewmodel"
+            name="standbyViewModel"
             type="com.freeme.freemelite.salemachine.viewmodels.StandbyViewModel" />
 
         <import type="com.freeme.freemelite.salemachine.ActivityRouter"/>
@@ -78,7 +78,9 @@
 
         </LinearLayout>
 
+        <!--android:onClick="@{standbyViewModel::onHomeButtonClick}"-->
         <ImageView
+            android:onClick="@{()->standbyViewModel.onHomeButtonClick(context)}"
             android:id="@+id/standby_home_button"
             android:layout_marginTop="49dp"
             android:layout_marginRight="41dp"

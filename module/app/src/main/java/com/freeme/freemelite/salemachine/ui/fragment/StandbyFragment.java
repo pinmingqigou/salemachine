@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.freeme.freemelite.router.base.BaseFragment;
-import com.freeme.freemelite.salemachine.ActivityRouter;
 import com.freeme.freemelite.salemachine.R;
 import com.freeme.freemelite.salemachine.databinding.FragmentStandbyBinding;
 import com.freeme.freemelite.salemachine.ui.view.GlideImageLoader;
@@ -37,6 +36,7 @@ public class StandbyFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_standby, container, false);
         mBinding = DataBindingUtil.bind(view);
+        mBinding.setStandbyViewModel(mStandbyViewModel);
         Log.e(TAG, ">>>>>>>>>>>>>>>>>>>onCreateView");
         return view;
     }
@@ -45,6 +45,7 @@ public class StandbyFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.e(TAG, ">>>>>>>>>>>>>>>>>onViewCreated");
+
     }
 
     @Override
@@ -86,13 +87,6 @@ public class StandbyFragment extends BaseFragment {
             @Override
             public void onChanged(@Nullable String s) {
                 mBinding.timeTv.setText(s);
-            }
-        });
-
-        mBinding.standbyHomeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ActivityRouter.startFeatureActivity(StandbyFragment.this.getContext());
             }
         });
     }
